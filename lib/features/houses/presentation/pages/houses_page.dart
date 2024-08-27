@@ -8,40 +8,33 @@ class HousesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Dispatch LoadHouses event
-    context.read<HousesBloc>().add(LoadHouses());
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Houses Overview'),
+        title: Text('Houses'),
       ),
       body: BlocBuilder<HousesBloc, HousesState>(
         builder: (context, state) {
           if (state is HousesLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(child: CircularProgressIndicator());
           } else if (state is HousesLoaded) {
-            return ListView(
-              padding: const EdgeInsets.all(16.0),
-              children: state.houses.map((house) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => HouseDetailPage(house: house),
-                        ),
-                      );
-                    },
-                    child: Text(house.name),
-                  ),
+            final houses = state.houses;
+            return ListView.builder(
+              itemCount: houses.length,
+              itemBuilder: (context, index) {
+                final house = houses[index];
+                return ListTile(
+                  title: Text(house['name']),
+                  onTap: () {
+                    // Navigate to house details page
+                  },
                 );
-              }).toList(),
+              },
             );
           } else if (state is HousesError) {
-            return Center(child: Text(state.message));
+            return Center(child: Text('Failed to load houses'));
+          } else {
+            return Center(child: Text('No data'));
           }
-          return const Center(child: Text('No data'));
         },
       ),
     );

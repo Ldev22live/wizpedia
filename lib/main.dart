@@ -71,7 +71,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _onSearch() {
     String query = _searchController.text;
-    print('Search query: $query');
+    if (query.isNotEmpty) {
+      BlocProvider.of<HousesBloc>(context).add(SearchHousesEvent(query));
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => const HousesPage(),
+        ),
+      );
+    }
   }
 
   void _onItemTapped(int index) {
