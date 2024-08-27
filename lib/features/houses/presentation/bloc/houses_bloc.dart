@@ -40,19 +40,18 @@ class HousesBloc extends Bloc<HousesEvent, HousesState> {
     if (event is SearchHousesEvent) {
       yield* _mapSearchHousesToState(event.query);
     }
-    // Handle other events...
   }
 
   Stream<HousesState> _mapSearchHousesToState(String query) async* {
     try {
       final houses = await getHousesUseCase.call();
       final filteredHouses = houses
-          .where((house) =>
-              house['name'].toLowerCase().contains(query.toLowerCase()))
+          .where(
+              (house) => house.name.toLowerCase().contains(query.toLowerCase()))
           .toList();
       yield HousesLoaded(filteredHouses);
-    } catch (_) {
-      yield HousesError();
+    } catch (e) {
+      yield HousesError(e.toString());
     }
   }
 

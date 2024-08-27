@@ -23,7 +23,7 @@ class HousesPage extends StatelessWidget {
               itemBuilder: (context, index) {
                 final house = houses[index];
                 return ListTile(
-                  title: Text(house['name']),
+                  title: Text(house.name),
                   onTap: () {
                     // Navigate to house details page
                   },
