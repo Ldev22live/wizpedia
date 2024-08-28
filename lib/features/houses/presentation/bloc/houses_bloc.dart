@@ -17,42 +17,17 @@ class HousesLoaded extends HousesState {
   HousesLoaded(this.houses);
 }
 
-class SearchHousesEvent extends HousesEvent {
-  final String query;
-
-  SearchHousesEvent(this.query);
-}
-
 class HousesError extends HousesState {
   final String message;
   HousesError(this.message);
 }
 
+// Define the Bloc
 class HousesBloc extends Bloc<HousesEvent, HousesState> {
   final GetHousesUseCase getHousesUseCase;
 
   HousesBloc(this.getHousesUseCase) : super(HousesInitial()) {
     on<LoadHouses>(_onLoadHouses);
-  }
-
-  @override
-  Stream<HousesState> mapEventToState(HousesEvent event) async* {
-    if (event is SearchHousesEvent) {
-      yield* _mapSearchHousesToState(event.query);
-    }
-  }
-
-  Stream<HousesState> _mapSearchHousesToState(String query) async* {
-    try {
-      final houses = await getHousesUseCase.call();
-      final filteredHouses = houses
-          .where(
-              (house) => house.name.toLowerCase().contains(query.toLowerCase()))
-          .toList();
-      yield HousesLoaded(filteredHouses);
-    } catch (e) {
-      yield HousesError(e.toString());
-    }
   }
 
   Future<void> _onLoadHouses(
